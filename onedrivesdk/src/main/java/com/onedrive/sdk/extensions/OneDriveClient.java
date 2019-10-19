@@ -35,6 +35,7 @@ import java.util.*;
 import com.onedrive.sdk.authentication.*;
 import com.onedrive.sdk.logger.*;
 import android.app.Activity;
+import android.content.Context;
 
 // This file is available for extending, afterwards please submit a pull request.
 
@@ -161,7 +162,7 @@ public class OneDriveClient extends BaseOneDriveClient implements IOneDriveClien
             mClient.validate();
 
             mClient.getAuthenticator()
-                .init(mClient.getExecutors(), mClient.getHttpProvider(), activity, mClient.getLogger());
+                .init(mClient.getExecutors(), mClient.getHttpProvider(), activity, activity, mClient.getLogger());
 
             IAccountInfo silentAccountInfo = null;
             try {
@@ -173,6 +174,44 @@ public class OneDriveClient extends BaseOneDriveClient implements IOneDriveClien
                 && mClient.getAuthenticator().login(null) == null) {
                 throw new ClientAuthenticatorException("Unable to authenticate silently or interactively",
                                                        OneDriveErrorCodes.AuthenticationFailure);
+            }
+
+            return mClient;
+        }
+
+        public void loginAndBuildClientSilently(final Context context, final ICallback<IOneDriveClient> callback) {
+            mClient.validate();
+
+            mClient.getExecutors().performOnBackground(new Runnable() {
+                @Override
+                public void run() {
+                    final IExecutors executors = mClient.getExecutors();
+                    try {
+                        executors.performOnForeground(loginAndBuildClientSilently(context), callback);
+                    } catch (final ClientException e) {
+                        executors.performOnForeground(e, callback);
+                    }
+                }
+            });
+        }
+
+        private IOneDriveClient loginAndBuildClientSilently(final Context context) throws ClientException {
+            mClient.validate();
+
+            mClient.getAuthenticator()
+                    .init(mClient.getExecutors(), mClient.getHttpProvider(), null, context, mClient.getLogger());
+
+            IAccountInfo silentAccountInfo = null;
+            try {
+                silentAccountInfo = mClient.getAuthenticator().loginSilent();
+            } catch (final Exception ignored) {
+                throw new ClientAuthenticatorException("Unable to authenticate silently",
+                        OneDriveErrorCodes.AuthenticationFailure);
+            }
+
+            if (silentAccountInfo == null) {
+                throw new ClientAuthenticatorException("Unable to authenticate silently or interactively",
+                        OneDriveErrorCodes.AuthenticationFailure);
             }
 
             return mClient;

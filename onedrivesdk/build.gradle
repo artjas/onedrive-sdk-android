@@ -9,23 +9,14 @@ if (JavaVersion.current().isJava8Compatible()) {
     }
 }
 
-def getVersionCode() {
-    return mavenMajorVersion.toInteger() * 10000 + mavenMinorVersion.toInteger() * 100 + mavenPatchVersion.toInteger()
-}
-
-def getVersionName() {
-    return "${mavenMajorVersion}.${mavenMinorVersion}.${mavenPatchVersion}"
-}
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    compileSdkVersion 28
+    buildToolsVersion "28.0.3"
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 23
-        versionCode this.getVersionCode()
-        versionName this.getVersionName()
+        targetSdkVersion 28
     }
 
     lintOptions {
@@ -61,43 +52,17 @@ task checkstyle(type: Checkstyle) {
 }
 
 dependencies {
-    compile ('com.microsoft.services.msa:msa-auth:0.8.4') {
+    implementation ('com.microsoft.services.msa:msa-auth:0.8.4') {
         exclude module: 'com.microsoft.services.msa'
     }
-    compile ('com.microsoft.aad:adal:1.1.7') {
+    implementation ('com.microsoft.aad:adal:1.1.7') {
         exclude module: 'com.microsoft.aad'
     }
-    compile ('com.google.code.gson:gson:2.3.1') {
+    implementation ('com.google.code.gson:gson:2.3.1') {
         exclude module: 'com.google.code.gson'
     }
 }
 
-uploadArchives {
-    def bintrayUsername = ""
-    def bintrayApikey = ""
-    if (project.rootProject.file('local.properties').exists()) {
-        Properties properties = new Properties()
-        properties.load(project.rootProject.file('local.properties').newDataInputStream())
-        bintrayUsername = properties.getProperty('bintray.user')
-        bintrayApikey = properties.getProperty('bintray.apikey')
-    }
-
-    configuration = configurations.archives
-    repositories.mavenDeployer {
-        pom {
-           setGroupId project.mavenGroupId
-           setArtifactId project.mavenArtifactId
-           setVersion getVersionName()
-        }
-        repository (url: project.mavenRepoUrl) {
-            authentication(
-                 // put these values in local file ~/.gradle/gradle.properties
-                 userName: project.hasProperty("bintrayUsername") ? project.bintrayUsername : bintrayUsername,
-                 password: project.hasProperty("bintrayApikey") ? project.bintrayApikey : bintrayApikey
-            )
-        }
-    }
-}
 
 task javadoc(type: Javadoc) {
     source = android.sourceSets.main.java.srcDirs

@@ -157,6 +157,8 @@ public abstract class ADALAuthenticator implements IAuthenticator {
      */
     private ILogger mLogger;
 
+    private Context context;
+
     /**
      * The client id for this authenticator.
      * @return The client id.
@@ -189,6 +191,7 @@ public abstract class ADALAuthenticator implements IAuthenticator {
     public synchronized void init(final IExecutors executors,
                                   final IHttpProvider httpProvider,
                                   final Activity activity,
+                                  final Context context,
                                   final ILogger logger) {
         if (mInitialized) {
             return;
@@ -198,6 +201,7 @@ public abstract class ADALAuthenticator implements IAuthenticator {
         mHttpProvider = httpProvider;
         mActivity = activity;
         mLogger = logger;
+        this.context = context;
 
         final BrokerPermissionsChecker brokerPermissionsChecker = new BrokerPermissionsChecker(mActivity, mLogger);
         brokerPermissionsChecker.check();

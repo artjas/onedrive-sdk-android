@@ -94,6 +94,8 @@ public class DisambiguationAuthenticator implements IAuthenticator {
      */
     private ILogger mLogger;
 
+    private Context context;
+
     /**
      * Creates a disambiguation authenticator.
      * @param msaAuthenticator The MSA Authenticator.
@@ -117,6 +119,7 @@ public class DisambiguationAuthenticator implements IAuthenticator {
     public synchronized void init(final IExecutors executors,
                                   final IHttpProvider httpProvider,
                                   final Activity activity,
+                                  final Context context,
                                   final ILogger logger) {
         if (mInitialized) {
             return;
@@ -124,10 +127,11 @@ public class DisambiguationAuthenticator implements IAuthenticator {
 
         mExecutors = executors;
         mActivity = activity;
+        this.context = context;
         mLogger = logger;
         mLogger.logDebug("Initializing MSA and ADAL authenticators");
-        mMSAAuthenticator.init(executors, httpProvider, activity, logger);
-        mADALAuthenticator.init(executors, httpProvider, activity, logger);
+        mMSAAuthenticator.init(executors, httpProvider, activity, context, logger);
+        mADALAuthenticator.init(executors, httpProvider, activity, context, logger);
         mInitialized = true;
     }
 

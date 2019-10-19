@@ -120,6 +120,8 @@ public abstract class MSAAuthenticator implements IAuthenticator {
      */
     private LiveAuthClient mAuthClient;
 
+    private Context context;
+
     /**
      * Initializes the authenticator.
      * @param executors The executors to schedule foreground and background tasks.
@@ -131,6 +133,7 @@ public abstract class MSAAuthenticator implements IAuthenticator {
     public synchronized void init(final IExecutors executors,
                      final IHttpProvider httpProvider,
                      final Activity activity,
+                     final Context context,
                      final ILogger logger) {
         if (mInitialized) {
             return;
@@ -138,9 +141,10 @@ public abstract class MSAAuthenticator implements IAuthenticator {
 
         mExecutors = executors;
         mActivity = activity;
+        this.context = context;
         mLogger = logger;
         mInitialized = true;
-        mAuthClient = new LiveAuthClient(activity, getClientId(), Arrays.asList(getScopes()));
+        mAuthClient = new LiveAuthClient(context, getClientId(), Arrays.asList(getScopes()));
 
         final SharedPreferences prefs = getSharedPreferences();
         mUserId.set(prefs.getString(USER_ID_KEY, null));
@@ -445,7 +449,7 @@ public abstract class MSAAuthenticator implements IAuthenticator {
      * @return The shared preferences.
      */
     private SharedPreferences getSharedPreferences() {
-        return mActivity.getSharedPreferences(MSA_AUTHENTICATOR_PREFS, Context.MODE_PRIVATE);
+        return context.getSharedPreferences(MSA_AUTHENTICATOR_PREFS, Context.MODE_PRIVATE);
     }
 
 }

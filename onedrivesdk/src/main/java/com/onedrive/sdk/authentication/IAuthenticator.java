@@ -23,6 +23,7 @@
 package com.onedrive.sdk.authentication;
 
 import android.app.Activity;
+import android.content.Context;
 
 import com.onedrive.sdk.concurrency.ICallback;
 import com.onedrive.sdk.concurrency.IExecutors;
@@ -51,6 +52,7 @@ public interface IAuthenticator {
     void init(final IExecutors executors,
               final IHttpProvider httpProvider,
               final Activity activity,
+              final Context context,
               final ILogger logger);
 
     /**
