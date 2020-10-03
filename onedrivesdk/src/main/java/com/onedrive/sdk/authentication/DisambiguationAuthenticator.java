@@ -34,7 +34,7 @@ import com.onedrive.sdk.logger.ILogger;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import java.security.InvalidParameterException;
 import java.util.concurrent.atomic.AtomicReference;

@@ -24,7 +24,7 @@ package com.onedrive.sdk.authentication.adal;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 
 import com.microsoft.aad.adal.AuthenticationSettings;
 import com.onedrive.sdk.authentication.ClientAuthenticatorException;

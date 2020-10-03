@@ -23,7 +23,7 @@
 package com.onedrive.sdk.concurrency;
 
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
